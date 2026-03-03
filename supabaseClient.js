@@ -3,6 +3,6 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 // Cria o client com a URL e a chave fornecidas
 export const supabase = createClient(
-  'SUPABASE_URL',
+  'url: https://szwqyfhsfmusduoqeway.supabase.co',
   'SUPABASE_ANON_KEY'
 )
