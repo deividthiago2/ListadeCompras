@@ -47,6 +47,13 @@ padding: 20px;
     text-align: center;
 }
 
+#logo {
+    width: 50px;
+    height: auto;
+    margin-bottom: 20px;
+    border-radius: var(--raio);
+}
+
 .titulo{
     font-size: clamp(1.5rem, 2vw + 1rem, 2rem);
     color: var(--cor-branco);
