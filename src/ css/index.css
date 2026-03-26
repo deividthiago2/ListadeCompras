@@ -6,7 +6,7 @@
     --cor-primaria-3: #A7CCED;
     --cor-primaria-4: #304D6D;
     --cor-bg: #82A0BC;
-    
+
     --cor-branco: #fff;
     --cor-preto: #1d1d1d;
     --cor-sombra: rgba(0, 0, 0, 0.15);
@@ -16,28 +16,28 @@
 
     --raio: 12px;
     --transition: 0.3s ease;
-    
+
 }
 
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-body{
+body {
     font-family: var(--fonte);
     background: #63ADF2;
-background: linear-gradient(90deg, rgba(99, 173, 242, 1) 0%, rgba(167, 204, 237, 1) 54%, rgba(48, 77, 109, 1) 100%);
-display: flex;
-justify-content: center;
-align-items: center;
-min-height: 100vh;
-padding: 20px;
+    background: linear-gradient(90deg, rgba(99, 173, 242, 1) 0%, rgba(167, 204, 237, 1) 54%, rgba(48, 77, 109, 1) 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
 }
 
 
-.container{
+.container {
     background: var(--cor-branco);
     padding: clamp(2rem, 5vh, 3rem);
     border-radius: var(--raio);
@@ -54,7 +54,7 @@ padding: 20px;
     border-radius: var(--raio);
 }
 
-.titulo{
+.titulo {
     font-size: clamp(1.5rem, 2vw + 1rem, 2rem);
     color: var(--cor-branco);
     margin-bottom: 1.5rem;
