@@ -75,5 +75,5 @@ button[onclick="logout()"] {
 }
 
 button[onclick="logout()"]:hover {
-    background-color: var(--cor-primaria-3);
+    background-color: var(--cor-primaria-4);
 }
