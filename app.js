@@ -1,6 +1,6 @@
 import { supabase } from './supabaseClient.js'
 
-// Recupera o usuÃ¡rio logado. Redireciona para login se nÃ£o estiver autenticado.
+// Recupera o usuário logado. Redireciona para login se não estiver autenticado.
 async function getUser() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) window.location.href = 'login.html'
@@ -22,7 +22,7 @@ async function carregarLista() {
   // Limpa a lista e renderiza os itens
   lista.innerHTML = ''
   data.forEach((item) => {
-    const li = document.createElement('li')>
+    const li = document.createElement('li')
     li.innerHTML = `${item.item} <button onclick="removerItem('${item.id}')">Remover</button>`
     lista.appendChild(li)
   })
