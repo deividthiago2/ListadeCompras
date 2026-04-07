@@ -22,7 +22,7 @@ async function carregarLista() {
   // Limpa a lista e renderiza os itens
   lista.innerHTML = ''
   data.forEach((item) => {
-    const li = document.createElement('li')
+    const li = document.createElement('li')>
     li.innerHTML = `${item.item} <button onclick="removerItem('${item.id}')">Remover</button>`
     lista.appendChild(li)
   })
@@ -36,7 +36,7 @@ window.adicionarItem = async function () {
 
   const { error } = await supabase.from('lista_compras').insert({
     item: input.value,
-    adicionada_por: user.id // Certifique-se que a coluna existe e Ã© do tipo uuid
+    adicionado_por: user.id // Certifique-se que a coluna existe e Ã© do tipo uuid
   })
 
   if (error) return alert('Erro ao adicionar: ' + error.message)
