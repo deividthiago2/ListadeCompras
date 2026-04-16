@@ -1,38 +1,216 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <link rel="shortcut icon" href="src/img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="src/ css/index.css">
-    <title>lista do Mercadão Fi</title>
+    <title>Lista 2026 • Minhas compras</title>
     <link rel="manifest" href="manifest.json">
 </head>
+
 <body>
-  <div class="container">
-    <h2 class="title"></h2>Minha lista de compra</h2>
-      <button onclick="logout()">Sair</button>
-      <ul id="lista"></ul>
-    
-      <input type="type" id="item" placeholder="Novo Item">
-      <button onclick="adicionarItem()">Adicionar</button>
-  </div>
+    <div class="container">
+        <!-- Header com navegação -->
+        <div class="app-header">
+            <div class="header-left">
+                <img id="logo-small" src="src/icons/icon-512x512.png" alt="logo" class="logo-small">
+                <h1 class="app-title">Lista <span>2026</span></h1>
+            </div>
+            <button onclick="logout()" class="btn-logout" aria-label="Sair">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                <span>Sair</span>
+            </button>
+        </div>
+
+        <!-- Resumo/Estatísticas -->
+        <div class="stats-card">
+            <div class="stat-item">
+                <span class="stat-label">Total de itens</span>
+                <span class="stat-value" id="totalItems">0</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-label">Comprados</span>
+                <span class="stat-value" id="compradosItems">0</span>
+            </div>
+        </div>
+
+        <!-- Lista de compras -->
+        <div class="lista-wrapper">
+            <div class="lista-header">
+                <h2 class="lista-title">🛒 Minha lista de compras</h2>
+                <button id="limparLista" class="btn-clear" onclick="limparLista()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                    Limpar tudo
+                </button>
+            </div>
+
+            <ul id="lista" class="shopping-list">
+                <!-- Estado vazio (aparece quando não há itens) -->
+                <li class="empty-state">
+                    <div class="empty-icon">📝</div>
+                    <p>Sua lista está vazia</p>
+                    <span>Adicione itens abaixo</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Formulário de adicionar item -->
+        <div class="add-item-form">
+            <div class="input-wrapper">
+                <input type="text" id="item" placeholder="Digite um novo item..." autocomplete="off">
+                <button onclick="adicionarItem()" class="btn-add" id="btnAdd">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    <span>Adicionar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div id="toast" class="toast hidden">
+        <span id="toastMessage"></span>
+    </div>
 
     <script type="module" src="app.js"></script>
 
-  <script>
+    <script>
+        // ============================================
+        // FUNÇÕES AUXILIARES DE UI/UX
+        // Mantendo compatibilidade com seu app.js original
+        // ============================================
+
+        // Mostrar toast (feedback visual)
+        function showToast(message, duration = 2000) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+
+            toastMessage.textContent = message;
+            toast.classList.remove('hidden');
+
+            // Adicionar classe para animação
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toast.classList.add('hidden');
+                }, 300);
+            }, duration);
+        }
+
+        // Atualizar contadores (chame isso após modificar a lista)
+        function atualizarContadores() {
+            const lista = document.getElementById('lista');
+            const items = lista.querySelectorAll('li:not(.empty-state)');
+            const totalItems = items.length;
+
+            // Contar itens comprados (marcados com checkbox)
+            const comprados = Array.from(items).filter(item => {
+                const checkbox = item.querySelector('input[type="checkbox"]');
+                return checkbox && checkbox.checked;
+            }).length;
+
+            document.getElementById('totalItems').textContent = totalItems;
+            document.getElementById('compradosItems').textContent = comprados;
+
+            // Mostrar/esconder estado vazio
+            const emptyState = lista.querySelector('.empty-state');
+            if (totalItems === 0) {
+                if (!emptyState) {
+                    const newEmptyState = document.createElement('li');
+                    newEmptyState.className = 'empty-state';
+                    newEmptyState.innerHTML = `
+                        <div class="empty-icon">📝</div>
+                        <p>Sua lista está vazia</p>
+                        <span>Adicione itens abaixo</span>
+                    `;
+                    lista.appendChild(newEmptyState);
+                }
+            } else {
+                if (emptyState) emptyState.remove();
+            }
+        }
+
+        // Função para limpar toda a lista (com confirmação)
+        window.limparLista = function () {
+            if (confirm('Tem certeza que deseja limpar toda a lista? Esta ação não pode ser desfeita.')) {
+                const lista = document.getElementById('lista');
+                const items = lista.querySelectorAll('li:not(.empty-state)');
+                items.forEach(item => item.remove());
+                atualizarContadores();
+                showToast('🗑️ Lista limpa com sucesso!');
+
+                // Se você tem uma função no app.js para limpar, chame aqui
+                if (typeof limparTodaLista === 'function') {
+                    limparTodaLista();
+                }
+            }
+        };
+
+        // Sobrescrever a função adicionarItem para incluir feedback visual
+        const adicionarItemOriginal = window.adicionarItem;
+        window.adicionarItem = function () {
+            const input = document.getElementById('item');
+            const itemName = input.value.trim();
+
+            if (!itemName) {
+                showToast('⚠️ Digite um item antes de adicionar', 1500);
+                input.focus();
+                return;
+            }
+
+            // Chamar função original se existir
+            if (typeof adicionarItemOriginal === 'function') {
+                adicionarItemOriginal();
+            }
+
+            // Feedback visual
+            showToast(`✓ "${itemName}" adicionado!`, 1500);
+            input.value = '';
+            input.focus();
+
+            // Atualizar contadores após um pequeno delay (para dar tempo do DOM atualizar)
+            setTimeout(() => atualizarContadores(), 100);
+        };
+
+        // Observer para atualizar contadores quando a lista mudar
+        const observer = new MutationObserver(() => {
+            atualizarContadores();
+        });
+
+        // Iniciar observer quando o DOM carregar
+        document.addEventListener('DOMContentLoaded', () => {
+            const lista = document.getElementById('lista');
+            if (lista) {
+                observer.observe(lista, { childList: true, subtree: true, attributes: true });
+                atualizarContadores();
+            }
+        });
+
+        // Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/service-worker.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registrado com sucesso:', registration.scope);
-                    })
-                    .catch(error => {
-                        console.log('Falha ao registrar o ServiceWorker:', error);
-                    });
+                    .then(registration => console.log('ServiceWorker registrado:', registration.scope))
+                    .catch(error => console.log('Falha no ServiceWorker:', error));
             });
         }
     </script>
-
 </body>
+
 </html>
